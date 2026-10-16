@@ -14,7 +14,7 @@
 - **双轨运行**：真实模型（DeepSeek 等）/ Mock 兜底；**API Key 只存后端**，前端只拿掩码。
 
 ## 怎么跑（30 秒）
-1. 准备 Node（≥ 20，含 `node:sqlite`）。本机路径：`D:\software\node.js\node.exe`。
+1. 准备 Node（**建议 v24，最低 v22.5**，项目用了内置 `node:sqlite`）。本机路径：`D:\software\node.js\node.exe`。
 2. 双击 **`start.bat`**（没有 `.env` 会自动用 `.env.example` 生成，默认 **Mock** 模式）。
 3. 浏览器打开 **http://localhost:8787**。
 
@@ -34,6 +34,7 @@
 │  └─ prompts/system-v1.md  # System Prompt
 ├─ web/index.html           # 单文件前端（含全部 CSS/JS）
 ├─ data/                    # SQLite 落库目录（运行时生成）
+├─ start.sh                 # macOS / Linux 启动脚本
 ├─ docs/                    # 设计文档 / 数据契约 / 部署指南 / 协作手册
 ├─ worklog.md               # 开发日志（人机协同证据）
 └─ LICENSE
