@@ -1,0 +1,10 @@
+{
+  "name": "reviewpal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "复盘通 ReviewPal · 黑客松 OPC 赛道 · P0 骨架（零依赖：只用 Node 内置能力）",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  }
+}
