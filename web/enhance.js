@@ -34,7 +34,7 @@
     var sc = document.getElementById('cardProgScore'); if (!sc) return;
     var sec = sc.closest('.gsec') || sc.parentNode;
     var host = document.createElement('div'); host.id = 'rpRingHost'; host.className = 'rp-prog';
-    host.innerHTML = '<div class="rp-ring" id="rpRing" style="--rp-v:0"><b id="rpRingNum">0</b></div><div class="lbl" id="rpRingLbl">推进度</div>';
+    host.innerHTML = '<div class="rp-ring" id="rpRing" style="--rp-v:0"></div><div class="lbl" id="rpRingLbl">推进度</div>';
     try { sec.parentNode.insertBefore(host, sec); } catch (e) { try { sc.parentNode.insertBefore(host, sc); } catch (e2) {} }
   }
   function paintRing() {
@@ -43,7 +43,6 @@
     var lbl = (((document.getElementById('cardProgLabel') || {}).textContent) || '').trim();
     var st = document.body.getAttribute('data-mood') || '';
     r.style.setProperty('--rp-v', Math.max(0, Math.min(100, score)));
-    var n = document.getElementById('rpRingNum'); if (n) n.textContent = score;
     var l = document.getElementById('rpRingLbl');
     if (l) l.innerHTML = (SYM[st] ? '<span class="rp-sym">' + SYM[st] + '</span> ' : '') + (lbl || '推进度') + '　·　' + score + ' 分';
   }
@@ -133,12 +132,15 @@
     var stt = document.body.getAttribute('data-mood');
     var mood = (stt && moodColor(stt)) || getComputedStyle(document.body).getPropertyValue('--mood').trim() || '#E8756B';
     var t = function (id, fb) { var e = document.getElementById(id); return (e && e.textContent.trim()) || fb; };
-    x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, W, H);
+    var cs = getComputedStyle(document.body);
+    var cvv = function (n, fb) { var v = (cs.getPropertyValue(n) || '').trim(); return v || fb; };
+    var cBg = cvv('--panel', '#FFFFFF'), cInk = cvv('--ink', '#1D1D1F'), cMuted = cvv('--muted', '#6E6E73'), cMuted2 = cvv('--muted-2', '#8E8E93'), cLine = cvv('--line', '#E5E5EA');
+    x.fillStyle = cBg; x.fillRect(0, 0, W, H);
     x.fillStyle = mood; x.fillRect(48, 52, W - 96, 10);
-    x.fillStyle = '#8A817C'; x.font = '600 19px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 每日复盘卡', 48, 104);
-    x.fillStyle = '#1D1D1F'; x.font = '700 34px "Microsoft YaHei",sans-serif'; x.fillText(t('cardDate', '') + ' · 每日进步', 48, 156);
+    x.fillStyle = cMuted; x.font = '600 19px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 每日复盘卡', 48, 104);
+    x.fillStyle = cInk; x.font = '700 34px "Microsoft YaHei",sans-serif'; x.fillText(t('cardDate', '') + ' · 每日进步', 48, 156);
     var yy = 214;
-    var section = function (label, text, lines) { x.fillStyle = mood; x.font = '700 19px "Microsoft YaHei",sans-serif'; x.fillText(label, 48, yy); yy += 30; x.fillStyle = '#1D1D1F'; x.font = '22px "Microsoft YaHei",sans-serif'; yy = __wrapText(x, text, 48, yy, W - 96, 32, lines || 3) + 22; };
+    var section = function (label, text, lines) { x.fillStyle = mood; x.font = '700 19px "Microsoft YaHei",sans-serif'; x.fillText(label, 48, yy); yy += 30; x.fillStyle = cInk; x.font = '22px "Microsoft YaHei",sans-serif'; yy = __wrapText(x, text, 48, yy, W - 96, 32, lines || 3) + 22; };
     section('① 我的目标', t('cardGoal', '（未填）'), 2);
     section('② 原本的计划', t('cardPlan', '（未填）'), 2);
     section('③ 实际做了什么', t('cardActual', '（未填）'), 3);
@@ -146,12 +148,14 @@
     section('⑤ 明天的计划', t('cardTomorrow', '（未填）'), 2);
     x.fillStyle = mood; x.font = '700 19px "Microsoft YaHei",sans-serif'; x.fillText('推进度', 48, yy); yy += 28;
     var score = parseInt(t('cardProgScore', '0'), 10) || 0;
-    yy += 40;
-    x.fillStyle = '#1D1D1F'; x.font = '20px "Microsoft YaHei",sans-serif'; x.fillText(t('cardProgLabel', '--') + '　' + score + ' 分', 48, yy); yy += 46;
-    x.strokeStyle = '#DCD5CF'; x.setLineDash([6, 6]); x.strokeRect(48, yy - 14, W - 96, 96); x.setLineDash([]);
-    x.fillStyle = '#8A817C'; x.font = '600 16px "Microsoft YaHei",sans-serif'; x.fillText('今日一句', 64, yy + 10);
-    x.fillStyle = '#4A4A4A'; x.font = 'italic 18px "Microsoft YaHei",sans-serif'; __wrapText(x, t('cardQuote', ''), 64, yy + 38, W - 128, 26, 2);
-    x.fillStyle = '#C9C2BC'; x.font = '16px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 目标复盘与每日打卡工具', 48, H - 52);
+    var rr = 32, rcx = 48 + rr, rcy = yy + rr;
+    x.lineWidth = 9; x.strokeStyle = cLine; x.beginPath(); x.arc(rcx, rcy, rr, 0, Math.PI * 2); x.stroke();
+    x.strokeStyle = mood; x.lineCap = 'round'; x.beginPath(); x.arc(rcx, rcy, rr, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0, Math.min(100, score)) / 100); x.stroke(); x.lineCap = 'butt';
+    x.fillStyle = cInk; x.font = '20px "Microsoft YaHei",sans-serif'; x.fillText(t('cardProgLabel', '--') + '　' + score + ' 分', rcx + rr + 24, rcy + 8);
+    yy += 2 * rr + 30;
+    x.fillStyle = cMuted; x.font = '600 16px "Microsoft YaHei",sans-serif'; x.fillText('今日一句', 48, yy + 12);
+    x.fillStyle = cMuted; x.font = 'italic 18px "Microsoft YaHei",sans-serif'; __wrapText(x, t('cardQuote', ''), 48, yy + 44, W - 96, 26, 2);
+    x.fillStyle = cMuted2; x.font = '16px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 目标复盘与每日打卡工具', 48, H - 52);
     var url = cv.toDataURL('image/png'), name = '复盘通_每日复盘卡_' + toYmd(new Date()) + '.png';
     var Cap = window.Capacitor;
     var P = Cap ? Cap.Plugins : null;
@@ -572,7 +576,7 @@
         var wp = c;
         var sc = parseInt(c.getAttribute('data-score'), 10); if (!(sc >= 0)) continue;
         var ring = document.createElement('span'); ring.className = 'rp-mr'; ring.style.setProperty('--m', String(Math.max(0, Math.min(100, sc))));
-        ring.innerHTML = '<b>' + sc + '</b>';
+        ring.innerHTML = '';
         wp.classList.add('rp-hasring'); wp.insertBefore(ring, wp.firstChild);
       }
     } catch (e) {}
