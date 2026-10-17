@@ -114,7 +114,6 @@
   .track{display:block; height:auto}
   .slide{width:min(1080px,100%); margin:0 auto 18px; display:flex; flex-direction:column; scroll-margin-top:82px}
   .slide:last-child{margin-bottom:0}
-  .decknav,.deckhint{display:none}
   .panelgrid{display:grid; gap:16px; grid-template-columns:1fr 1fr; align-items:stretch; height:100%}
   .panelgrid.one{grid-template-columns:1fr}
   @media (max-width:980px){
@@ -128,7 +127,6 @@
   .dots{display:flex; gap:9px}
   .dots i{width:9px; height:9px; border-radius:50%; background:var(--line-strong); cursor:pointer; transition:.22s}
   .dots i.on{background:var(--accent); transform:scale(1.25)}
-  .deckhint{text-align:center; font-size:12.5px; color:var(--muted); margin:8px 0 0}
   .stepsbar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:6px 0 12px}
   .stepfoot{display:flex; align-items:center; gap:10px; margin-top:12px}
   .stepfoot .btn{flex:1 1 0; text-align:center; min-width:0}
@@ -283,7 +281,6 @@
     <b>本页已接后端：</b>填完「每日进步五问」点「开始复盘」会请求 <code>POST /api/review/generate</code>（当前为 Mock 模式，接好 Key 后走真实模型）。本产品只做目标复盘打卡。
   </div>
 
-  <p class="deckhint" id="deckHint">点击左右两侧的卡片即可切换 · 键盘 ← → 也可以</p>
 
   <div class="deck" id="deck">
    <div class="track" id="track">
@@ -453,7 +450,7 @@
   <div class="decknav">
     <div class="dots" id="deckDots"></div>
   </div>
-  <p class="deckhint" id="deckCap">每日五问</p>  <div class="labels-only">
+  <div class="labels-only">
     <details class="map">
       <summary>路演脚本（上台照念）</summary>
       <ol style="font-size:13px;line-height:1.9;padding-left:22px">
@@ -1022,7 +1019,6 @@ function slideTo(n, silent){
   __slide=Math.max(0,Math.min(all.length-1,n));
   all.forEach(function(s,idx){ s.classList.toggle('active', idx===__slide); });
   const dots=document.getElementById('deckDots'); if(dots) dots.querySelectorAll('i').forEach(function(d,idx){ d.classList.toggle('on', idx===__slide); });
-  const cap=document.getElementById('deckCap'); const sl=all[__slide]; if(cap&&sl) cap.textContent=sl.dataset.cap||'';
   if(isWide()){ if(silent) return; try{ all[__slide].scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){} return; }
   centerTrack();
 }

@@ -98,3 +98,4 @@
 | 10/17 | 今日一句去边框 | App 内 `.quotebox` 与导出 PNG 的虚线框都去掉 | web/index.html · web/enhance.js |
 | 10/17 | PPT 代改 → V2.1 | 文案升 V2.1 + 示意图「进度条→圆环」；未嵌入用户截图（仅参考） | 复盘通_答辩PPT_V2.1.pptx |
 | 10/17 | 代码清理 | 删死引用/死 CSS/死函数：`cardBar`/`yestBar`/`rpRingNum`/`animateNum`/`moodStrip·moodNow` 残留、`.bar`/`.pubrow`/`.hp0`/`.hsoon`/`.navbtn`/`.moodchip*` 死 CSS、index.html 重复的 `exportCard`、enhance 里无用的 `ymd`、`saveName` | web/index.html · web/enhance.js |
+| 10/18 | 二次清理（复核后） | 复核确认 .decknav/.dots/#deckDots 是**活的**（桌面点状翻页器）→ **保留**；只删隐藏残件 .deckhint/#deckHint/#deckCap；生成器删掉被覆盖的第一个 heatmap（slide_arrow_down 经查仍在用，保留） | web/index.html · work/build_ppt_reviewpal.py |
