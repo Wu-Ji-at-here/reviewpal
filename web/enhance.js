@@ -13,7 +13,6 @@
       '.rp-ring{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;',
       'background:conic-gradient(var(--mood) calc(var(--rp-v,0) * 1%), var(--bg-2) 0);position:relative}',
       '.rp-ring::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--panel)}',
-      '.rp-ring b{position:relative;font-size:19px;font-weight:800}',
       '.rp-prog{display:flex;align-items:center;gap:12px;margin:8px 0 10px;flex-wrap:wrap}',
       '.rp-prog .lbl{font-size:12.5px;color:var(--muted)}',
       '.rp-wk{grid-column:1/-1;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted);',
@@ -21,7 +20,6 @@
       '.rp-wk b{color:var(--ink)}',
       '.rp-guide{grid-column:1/-1;background:var(--info-soft);color:var(--info);border:1px dashed currentColor;border-radius:14px;padding:16px;font-size:13px;line-height:1.75}',
       '.rp-guide b{display:block;font-size:14px;margin-bottom:4px}',
-      '.moodchip .rp-sym{font-style:normal}',
       '.hd{cursor:pointer}',
       '@media (max-width:980px){ .rp-ring{width:62px;height:62px} .rp-prog .lbl{font-size:12px} }'
     ].join('');
@@ -474,7 +472,6 @@
   if (window.__rp_v124) return; window.__rp_v124 = true;
   var MOB = '(max-width:980px)';
   function isMob() { try { return window.matchMedia(MOB).matches; } catch (e) { return false; } }
-  function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function copyText(t) { try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t); } else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); } if (typeof toast === 'function') toast('已复制到剪贴板'); } catch (e) {} }
   function bindCopy(el) { try { if (!el || el.__cp) return; el.__cp = 1; var th = null; el.addEventListener('touchstart', function () { th = setTimeout(function () { copyText(el.textContent); }, 600); }, { passive: true }); ['touchend', 'touchmove', 'touchcancel'].forEach(function (ev) { el.addEventListener(ev, function () { if (th) { clearTimeout(th); th = null; } }, { passive: true }); }); el.addEventListener('dblclick', function () { copyText(el.textContent); }); } catch (e) {} }
   function classifyErr(t) { try { if (/401|403|鉴权|unauthor|invalid[\s\S]{0,12}key|key[\s\S]{0,12}(invalid|错误)/i.test(t)) return '【鉴权失败】API Key 不正确或没有权限'; if (/429|限流|rate.?limit|too many/i.test(t)) return '【被限流】请求过快，稍后再试'; if (/ENOTFOUND|EAI_AGAIN|fetch failed|network|无法连接|ECONN|DNS/i.test(t)) return '【网络不可达】检查网络或接口地址'; if (/timeout|超时|ETIMEDOUT|aborted/i.test(t)) return '【请求超时】'; if (/JSON|parse|Unexpected token|格式/i.test(t)) return '【返回格式异常】模型未按要求返回 JSON'; } catch (e) {} return ''; }
@@ -502,7 +499,6 @@
       '.rp-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;background:color-mix(in srgb,var(--mood) 16%,transparent);color:var(--mood);vertical-align:middle;margin-left:6px}',
       '.rp-mr{width:30px;height:30px;border-radius:50%;position:relative;flex:0 0 auto;background:conic-gradient(var(--mood) calc(var(--m,0) * 1%),var(--bg-2) 0)}',
       '.rp-mr::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--panel)}',
-      '.rp-mr b{position:absolute;inset:0;display:grid;place-items:center;font-size:8.5px;font-weight:700;color:var(--ink);z-index:1}',
       '.wp.rp-hasring{display:flex;align-items:center;gap:8px}',
       '#settingsOverlay .rp-grp{margin:0 0 18px}',
       '#settingsOverlay .rp-grp > .rp-gh{font-size:12px;color:var(--muted-2);margin:0 0 7px 14px}',
@@ -542,15 +538,6 @@
     };
   }
 
-  function animateNum() {
-    try {
-      var el = document.getElementById('rpRingNum'); if (!el) return;
-      var target = parseInt(el.textContent, 10) || 0; if (target <= 0) return;
-      var t0 = null, dur = 520;
-      function step(ts) { if (t0 === null) t0 = ts; var k = Math.min(1, (ts - t0) / dur); el.textContent = Math.round(target * k); if (k < 1) requestAnimationFrame(step); }
-      requestAnimationFrame(step);
-    } catch (e) {}
-  }
   function decorateCard() {
     try {
       var d = document.getElementById('cardDate'); if (!d) return;
@@ -564,7 +551,7 @@
   }
   ['fillFields', 'applyMood'].forEach(function (fn) {
     var o = window[fn]; if (typeof o !== 'function') return;
-    window[fn] = function () { var r = o.apply(this, arguments); try { setTimeout(function () { animateNum(); decorateCard(); }, 30); } catch (e) {} return r; };
+    window[fn] = function () { var r = o.apply(this, arguments); try { setTimeout(decorateCard, 30); } catch (e) {} return r; };
   });
 
   function decorateWall() {

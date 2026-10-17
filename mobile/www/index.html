@@ -109,8 +109,6 @@
   body.labels-off .tag,body.labels-off .doc,body.labels-off .note,body.labels-off .labels-only{display:none!important}
   body.labels-off .deck{height:auto}
   body.labels-off .slide{height:auto}
-  .hp0{display:inline-flex; align-items:center; font-size:11.5px; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--ok-soft); color:var(--ok)}
-  .hsoon{display:inline-flex; align-items:center; font-size:11.5px; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--bad-soft); color:var(--bad)}
   .demo-badge{display:inline-flex; font-size:11px; font-weight:600; padding:1.5px 7px; border-radius:999px; background:var(--info-soft); color:var(--info)}
   .deck{position:relative; margin-top:16px}
   .track{display:block; height:auto}
@@ -127,9 +125,6 @@
     .panelgrid{grid-template-columns:1fr!important; height:auto}
   }
   .decknav{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:12px}
-  .navbtn{width:44px; height:44px; border-radius:50%; border:1px solid var(--line-strong); background:var(--panel);
-    color:var(--ink); font-size:17px; cursor:pointer; box-shadow:var(--shadow-2); display:grid; place-items:center; transition:.18s}
-  .navbtn:hover{background:var(--panel-2)} .navbtn[disabled]{opacity:.3; cursor:default}
   .dots{display:flex; gap:9px}
   .dots i{width:9px; height:9px; border-radius:50%; background:var(--line-strong); cursor:pointer; transition:.22s}
   .dots i.on{background:var(--accent); transform:scale(1.25)}
@@ -173,16 +168,7 @@
     border:1px solid var(--line-strong); border-radius:10px; box-shadow:var(--shadow); padding:4px}
   .sugitem{padding:7px 10px; font-size:13.5px; color:var(--ink); border-radius:7px; cursor:pointer;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .sugitem:hover{background:var(--panel-2)}  .moodstrip{display:flex; gap:8px; flex-wrap:wrap; margin:4px 0 8px}
-  .moodchip{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color:var(--muted);
-    background:var(--panel-2); border:1px solid var(--line-strong); padding:7px 12px; border-radius:999px; transition:.2s}
-  .moodchip i{width:9px;height:9px;border-radius:50%;background:var(--line-strong)}
-  .moodchip[data-m=advance] i{background:var(--p-advance)} .moodchip[data-m=on_track] i{background:var(--p-ontrack)}
-  .moodchip[data-m=partial] i{background:var(--p-partial)} .moodchip[data-m=off_track] i{background:var(--p-off)}
-  .moodchip[data-m=stalled] i{background:var(--p-stalled)}
-  .moodchip.on{color:var(--ink); background:var(--panel); border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--mood-rgb),.16)}
-  .moodnote{font-size:13px; color:var(--muted); margin-bottom:12px}
-  .moodnote b{color:var(--ink)}
+  .sugitem:hover{background:var(--panel-2)}
   .flow{display:flex; gap:8px; flex-wrap:wrap}
   .step{font-size:12.5px; color:var(--muted); background:var(--panel-2); border:1px solid var(--line); border-radius:999px; padding:6px 12px; transition:.25s}
   .step.active{color:#fff; background:var(--accent); border-color:var(--accent)}
@@ -204,10 +190,7 @@
   .gsec .val{font-size:14px; color:var(--ink)}
   .quotebox .val{color:var(--muted-2); font-style:italic; padding:6px 2px}
   .qhintt{font-weight:400; color:var(--muted-2); font-style:normal}
-  .bar{position:relative; height:9px; border-radius:999px; background:var(--bg-2); overflow:hidden; margin-top:6px}
-  .bar i{position:absolute; left:0; top:0; bottom:0; width:0; background:var(--mood); border-radius:999px; transition:width .6s cubic-bezier(.22,.9,.28,1)}
-  .pubrow{display:flex; align-items:center; gap:9px; font-size:13px; color:var(--muted); margin:8px 0}
-  .pubrow input{width:17px; height:17px; accent-color:var(--accent)}  .streakhead{display:flex; align-items:center; gap:12px; margin:2px 0 10px}
+  .streakhead{display:flex; align-items:center; gap:12px; margin:2px 0 10px}
   .flame{font-size:30px; line-height:1; filter:saturate(1.1)}
   .flame.dim{filter:grayscale(1); opacity:.5}
   .heathead{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:6px}
@@ -280,7 +263,6 @@
   .cardmain{min-width:0}
   .cardctrl{display:flex; flex-wrap:wrap; align-items:center; gap:14px}
   .cardctrl .spacer{display:none}
-  .cardctrl .pubrow{margin:0}
   .cardctrl .note{flex:1 1 100%; margin:0}
 </style>
 <div class="wrap">
@@ -726,9 +708,6 @@ function moodColor(k){ const d=PROGRESS[k]; if(!d) return ''; const val=getCompu
 function applyMood(k){
   const key=PROGRESS[k]?k:'';
   if(key) document.body.setAttribute('data-mood',key); else document.body.removeAttribute('data-mood');
-  document.querySelectorAll('#moodStrip .moodchip').forEach(function(c){ c.classList.toggle('on', c.dataset.m===key); });
-  const nm=document.getElementById('moodNow');
-  if(nm) nm.innerHTML = key ? ('当前推进度：<b>'+PROGRESS[key].label+'</b> · '+PROGRESS[key].desc+' · 整页已按此档配色') : '尚未判定（填完五问、点「开始复盘」后自动判定）';
 }
 
 /* 五问分步（一步一问） */
@@ -802,7 +781,6 @@ function fillFields(d,a){
   const sc=(d.progress&&d.progress.score)||0;
   document.getElementById('cardProgLabel').textContent=(d.progress&&d.progress.label)||'--';
   document.getElementById('cardProgScore').textContent=sc||'--';
-  const cb0=document.getElementById('cardBar'); if(cb0) cb0.style.width=sc+'%';
   setQuote(d && d.quote);
 }
 window.editHistory=[];
@@ -838,7 +816,6 @@ function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(m){ re
 function visitorId(){ try{ let val=localStorage.getItem('reviewpal-visitor'); if(!val){ val='v_'+Math.random().toString(36).slice(2,10); localStorage.setItem('reviewpal-visitor',val); } return val; }catch(e){ return 'v_anon'; } }
 const NAME_KEY='reviewpal-nickname';
 function myName(){ try{ return (localStorage.getItem(NAME_KEY)||'').trim(); }catch(e){ return ''; } }
-function saveName(){ try{ localStorage.setItem(NAME_KEY,(document.getElementById('myName').value||'').trim().slice(0,20)); }catch(e){} }
 /* ================= 我的打卡墙（按推进度筛选） ================= */
 window.__records=[]; window.__wallFilter='all';
 function rpSearchEnter(e){ if(!e) return; if(e.key==='Enter'){ try{ e.target.blur(); }catch(err){} } }
@@ -919,7 +896,7 @@ function renderHeatmap(records){
     const ts=(tRec&&tRec.progress&&tRec.progress.score!=null)?tRec.progress.score:null;
     if(ys!=null&&ts!=null){ const diff=ts-ys; const yt=document.getElementById('yestText');
       if(yt) yt.innerHTML=ys+' 分 → <b>'+ts+' 分</b> '+(diff>0?('↑ 高 '+diff+' 分'):diff<0?('↓ 低 '+Math.abs(diff)+' 分'):'＝ 与昨天持平');
-      const yb=document.getElementById('yestBar'); if(yb) yb.style.width=Math.min(100,ts)+'%'; yRow.hidden=false;
+      yRow.hidden=false;
     } else yRow.hidden=true;
   }
 }
@@ -1016,40 +993,6 @@ function __wrapText(x,text,left,top,maxW,lh,maxLines){
       if(n>=maxLines){ x.fillText(line.slice(0,Math.max(1,line.length-1))+'…',left,y); return y+lh; } } else { line=test; } }
   if(line){ x.fillText(line,left,y); y+=lh; } return y;
 }
-function exportCard(){
-  const W=720,H=1240; const cv=document.createElement('canvas'); cv.width=W; cv.height=H; const x=cv.getContext('2d');
-  const st=document.body.getAttribute('data-mood');
-  const mood=(st?moodColor(st):'')||getComputedStyle(document.body).getPropertyValue('--mood').trim()||'#E8756B';
-  const t=function(id,fb){ const e=document.getElementById(id); return (e&&e.textContent.trim())||fb; };
-  const cs=getComputedStyle(document.body);
-  const cvv=function(n,fb){ const v=(cs.getPropertyValue(n)||'').trim(); return v||fb; };
-  const cBg=cvv('--panel','#FFFFFF'), cInk=cvv('--ink','#1D1D1F'), cMuted=cvv('--muted','#6E6E73'), cMuted2=cvv('--muted-2','#8E8E93'), cLine=cvv('--line','#E5E5EA');
-  x.fillStyle=cBg; x.fillRect(0,0,W,H);
-  x.fillStyle=mood; x.fillRect(48,52,W-96,10);
-  x.fillStyle=cMuted; x.font='600 19px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 每日复盘卡',48,104);
-  x.fillStyle=cInk; x.font='700 34px "Microsoft YaHei",sans-serif'; x.fillText(t('cardDate','')+' · 每日进步',48,156);
-  let yy=214;
-  const section=function(label,text,lines){ x.fillStyle=mood; x.font='700 19px "Microsoft YaHei",sans-serif'; x.fillText(label,48,yy); yy+=30;
-    x.fillStyle=cInk; x.font='22px "Microsoft YaHei",sans-serif'; yy=__wrapText(x,text,48,yy,W-96,32,lines||3)+22; };
-  section('① 我的目标', t('cardGoal','（未填）'),2);
-  section('② 原本的计划', t('cardPlan','（未填）'),2);
-  section('③ 实际做了什么', t('cardActual','（未填）'),3);
-  section('④ 保持 / 优化', t('cardReview','（未填）'),3);
-  section('⑤ 明天的计划', t('cardTomorrow','（未填）'),2);
-  x.fillStyle=mood; x.font='700 19px "Microsoft YaHei",sans-serif'; x.fillText('推进度',48,yy); yy+=28;
-  const score=parseInt(t('cardProgScore','0'),10)||0;
-  var rr=32, rcx=48+rr, rcy=yy+rr;
-  x.lineWidth=9; x.strokeStyle=cLine; x.beginPath(); x.arc(rcx,rcy,rr,0,Math.PI*2); x.stroke();
-  x.strokeStyle=mood; x.lineCap='round'; x.beginPath(); x.arc(rcx,rcy,rr,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.max(0,Math.min(100,score))/100); x.stroke(); x.lineCap='butt';
-  x.fillStyle=cInk; x.font='20px "Microsoft YaHei",sans-serif'; x.fillText(t('cardProgLabel','--')+'　'+score+' 分', rcx+rr+24, rcy+8); yy+=2*rr+30;
-  x.fillStyle=cMuted; x.font='600 16px "Microsoft YaHei",sans-serif'; x.fillText('今日一句',48,yy+12);
-  x.fillStyle=cMuted; x.font='italic 18px "Microsoft YaHei",sans-serif';
-  __wrapText(x, t('cardQuote',''), 48, yy+44, W-96, 26, 2);
-  x.fillStyle=cMuted2; x.font='16px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 目标复盘与每日打卡工具',48,H-52);
-  const a=document.createElement('a'); a.download='复盘通_每日复盘卡_'+ymd(new Date())+'.png'; a.href=cv.toDataURL('image/png'); a.click();
-  toast('卡片已导出为 PNG（含鸡汤占位框）');
-}
-
 /* ================= 幻灯片切换（箭头 / 键盘 / 拖拽滑动） ================= */
 let __slide=0;
 function slides(){ return Array.prototype.slice.call(document.querySelectorAll('#deck .slide')); }
@@ -1067,7 +1010,6 @@ function resetFive(){
     const cd=document.getElementById('cardDate'); if(cd) cd.textContent='— · 每日进步';
     const pl=document.getElementById('cardProgLabel'); if(pl) pl.textContent='--';
     const ps=document.getElementById('cardProgScore'); if(ps) ps.textContent='--';
-    const bar=document.getElementById('cardBar'); if(bar) bar.style.width='0';
     stepShow(1); updatePreview(); focusCurrent();
     toast('已清空五问输入与草稿');
   };
@@ -1147,7 +1089,7 @@ function bindHistoryFields(){
 applyTheme(); applyMood(''); stepShow(1); updatePreview(); slideTo(0,1); bindAutoGrow(); bindHistoryFields(); setQuote();
 setWallFilter('all');
 loadConfig(); loadRecords();
-(function(){ const mn=document.getElementById('myName'); if(mn) mn.value=myName(); document.querySelectorAll('#qList li').forEach(function(li){ li.addEventListener('click', function(){ goStep(Number(li.dataset.q)); }); }); })();
+(function(){ document.querySelectorAll('#qList li').forEach(function(li){ li.addEventListener('click', function(){ goStep(Number(li.dataset.q)); }); }); })();
 (function(){ const wrap=document.getElementById('q_align'); if(!wrap) return; const chips=[].slice.call(wrap.querySelectorAll('.chip')); chips.forEach(function(c){ c.addEventListener('mousedown', function(e){ e.preventDefault(); }); c.addEventListener('click', function(){ chips.forEach(function(x){ x.classList.remove('on'); }); c.classList.add('on'); }); }); })();
 </script>
   <script src="rp-core.js"></script>

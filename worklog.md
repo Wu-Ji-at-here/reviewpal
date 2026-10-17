@@ -97,3 +97,4 @@
 | 10/17 | 导出 PNG 跟随主题 | 导出卡片改为读取当前主题变量（深色主题 → 深色卡片），并在卡片上画出推进度圆环；去掉虚线框 | web/enhance.js · web/index.html |
 | 10/17 | 今日一句去边框 | App 内 `.quotebox` 与导出 PNG 的虚线框都去掉 | web/index.html · web/enhance.js |
 | 10/17 | PPT 代改 → V2.1 | 文案升 V2.1 + 示意图「进度条→圆环」；未嵌入用户截图（仅参考） | 复盘通_答辩PPT_V2.1.pptx |
+| 10/17 | 代码清理 | 删死引用/死 CSS/死函数：`cardBar`/`yestBar`/`rpRingNum`/`animateNum`/`moodStrip·moodNow` 残留、`.bar`/`.pubrow`/`.hp0`/`.hsoon`/`.navbtn`/`.moodchip*` 死 CSS、index.html 重复的 `exportCard`、enhance 里无用的 `ymd`、`saveName` | web/index.html · web/enhance.js |
