@@ -45,7 +45,7 @@
     r.style.setProperty('--rp-v', Math.max(0, Math.min(100, score)));
     var n = document.getElementById('rpRingNum'); if (n) n.textContent = score;
     var l = document.getElementById('rpRingLbl');
-    if (l) l.innerHTML = (SYM[st] ? '<span class="rp-sym">' + SYM[st] + '</span> ' : '') + (lbl || '推进度') + '　·　0-100 分';
+    if (l) l.innerHTML = (SYM[st] ? '<span class="rp-sym">' + SYM[st] + '</span> ' : '') + (lbl || '推进度') + '　·　' + score + ' 分';
   }
   ['fillFields', 'applyMood'].forEach(function (fn) {
     var orig = window[fn]; if (typeof orig !== 'function') return;
@@ -146,14 +146,32 @@
     section('⑤ 明天的计划', t('cardTomorrow', '（未填）'), 2);
     x.fillStyle = mood; x.font = '700 19px "Microsoft YaHei",sans-serif'; x.fillText('推进度', 48, yy); yy += 28;
     var score = parseInt(t('cardProgScore', '0'), 10) || 0;
-    x.fillStyle = '#F1EDEA'; x.fillRect(48, yy, W - 96, 14);
-    x.fillStyle = mood; x.fillRect(48, yy, Math.max(14, (W - 96) * Math.min(100, score) / 100), 14); yy += 40;
+    yy += 40;
     x.fillStyle = '#1D1D1F'; x.font = '20px "Microsoft YaHei",sans-serif'; x.fillText(t('cardProgLabel', '--') + '　' + score + ' 分', 48, yy); yy += 46;
     x.strokeStyle = '#DCD5CF'; x.setLineDash([6, 6]); x.strokeRect(48, yy - 14, W - 96, 96); x.setLineDash([]);
     x.fillStyle = '#8A817C'; x.font = '600 16px "Microsoft YaHei",sans-serif'; x.fillText('今日一句', 64, yy + 10);
     x.fillStyle = '#4A4A4A'; x.font = 'italic 18px "Microsoft YaHei",sans-serif'; __wrapText(x, t('cardQuote', ''), 64, yy + 38, W - 128, 26, 2);
     x.fillStyle = '#C9C2BC'; x.font = '16px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 目标复盘与每日打卡工具', 48, H - 52);
     var url = cv.toDataURL('image/png'), name = '复盘通_每日复盘卡_' + toYmd(new Date()) + '.png';
+    var Cap = window.Capacitor;
+    var P = Cap ? Cap.Plugins : null;
+    var native = false;
+    if (Cap) { if (typeof Cap.isNativePlatform === 'function') { native = Cap.isNativePlatform(); } else if (Cap.platform === 'android') { native = true; } else if (Cap.platform === 'ios') { native = true; } }
+    if (native) {
+      if (P) {
+        try {
+          P.SaveImage.saveBase64({ dataUrl: url, fileName: name }).then(function () {
+            toast('已保存到系统相册（相册 › ReviewPal）');
+          }).catch(function (err) {
+            var m = '';
+            if (err) { m = err.message ? err.message : String(err); }
+            try { var a2 = document.createElement('a'); a2.download = name; a2.href = url; document.body.appendChild(a2); a2.click(); document.body.removeChild(a2); } catch (e2) {}
+            toast('保存到相册失败，已改为下载：' + m);
+          });
+          return;
+        } catch (e3) {}
+      }
+    }
     var ios = /iP(hone|ad|od)/.test(navigator.userAgent);
     try {
       var a = document.createElement('a'); a.download = name; a.href = url; document.body.appendChild(a); a.click(); document.body.removeChild(a);
@@ -477,8 +495,6 @@
       '@media(max-width:980px){.rp-wkhead{max-width:none;gap:5px}}',
       '.rp-ring{background:conic-gradient(from -90deg,color-mix(in srgb,var(--accent) 58%,#fff) 0,var(--accent) calc(var(--rp-v,0) * 1%),var(--bg-2) 0)!important}',
       'body.theme-cyber .rp-ring{background:conic-gradient(from -90deg,color-mix(in srgb,var(--accent) 72%,#000) 0,var(--accent) calc(var(--rp-v,0) * 1%),var(--bg-2) 0)!important}',
-      '.rp-sparkwrap{margin:10px 0 2px}',
-      '.rp-spark{width:100%;height:58px;display:block}',
       '.rp-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;background:color-mix(in srgb,var(--mood) 16%,transparent);color:var(--mood);vertical-align:middle;margin-left:6px}',
       '.rp-mr{width:30px;height:30px;border-radius:50%;position:relative;flex:0 0 auto;background:conic-gradient(var(--mood) calc(var(--m,0) * 1%),var(--bg-2) 0)}',
       '.rp-mr::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--panel)}',
@@ -561,33 +577,8 @@
       }
     } catch (e) {}
   }
-  function ensureSparkHost() {
-    try {
-      var grid = document.getElementById('wallGrid'); if (!grid) return null;
-      var h = document.getElementById('rpSpark');
-      if (!h) { h = document.createElement('div'); h.id = 'rpSpark'; h.className = 'rp-sparkwrap'; grid.parentNode.insertBefore(h, grid); }
-      return h;
-    } catch (e) { return null; }
-  }
-  function renderSpark() {
-    try {
-      var host = ensureSparkHost(); if (!host) return;
-      var recs = window.__records || [], map = {};
-      for (var i = 0; i < recs.length; i++) { var r = recs[i]; if (r && r.date && r.progress && typeof r.progress.score === 'number') map[r.date] = r.progress.score; }
-      var now = new Date(), pts = [];
-      for (var d = 6; d >= 0; d--) { var dd = new Date(now.getTime() - d * 864e5); var k = ymd(dd); pts.push(map[k] != null ? map[k] : null); }
-      var have = pts.filter(function (x) { return x != null; });
-      if (have.length < 2) { host.innerHTML = '<div class="rp-note" style="margin:0">最近 7 天：至少 2 天记录后才画趋势</div>'; return; }
-      var W = 320, H = 58, n = pts.length, stepX = (W - 8) / (n - 1), mn = Math.min.apply(null, have), mx = Math.max.apply(null, have), span = Math.max(8, mx - mn);
-      var coords = pts.map(function (v, i) { return { x: 4 + i * stepX, y: (v == null ? null : (H - 10 - (v - mn) / span * (H - 24))), v: v }; });
-      var line = '', first = null, last = null;
-      coords.forEach(function (p) { if (p.y == null) return; if (first === null) { line = 'M' + p.x.toFixed(1) + ',' + p.y.toFixed(1); first = p; } else { line += ' L' + p.x.toFixed(1) + ',' + p.y.toFixed(1); } last = p; });
-      var area = line + ' L' + last.x.toFixed(1) + ',' + H + ' L' + first.x.toFixed(1) + ',' + H + ' Z';
-      host.innerHTML = '<svg class="rp-spark" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none"><defs><linearGradient id="rpsg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs><path d="' + area + '" fill="url(#rpsg)"/><path d="' + line + '" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    } catch (e) {}
-  }
   var _rw = window.renderWall;
-  if (typeof _rw === 'function') { window.renderWall = function () { var r = _rw.apply(this, arguments); try { decorateWall(); renderSpark(); } catch (e) {} return r; }; }
+  if (typeof _rw === 'function') { window.renderWall = function () { var r = _rw.apply(this, arguments); try { decorateWall(); } catch (e) {} return r; }; }
 
   function decorateHeat() {
     try {
@@ -676,7 +667,6 @@
   function boot() {
     try { buildGroups(); } catch (e) {}
     try { decorateWall(); } catch (e) {}
-    try { renderSpark(); } catch (e) {}
     try { decorateHeat(); } catch (e) {}
     try { bindCopy(document.getElementById('testOut')); } catch (e) {}
     try { var cur = window.__theme; if (!cur) { try { cur = localStorage.getItem('reviewpal-theme'); } catch (e) {} } if (cur === 'ios') window.applyTheme('ios'); } catch (e) {}
