@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">复盘通</string>
+    <string name="title_activity_main">复盘通</string>
+    <string name="package_name">com.reviewpal.app</string>
+    <string name="custom_url_scheme">com.reviewpal.app</string>
+</resources>

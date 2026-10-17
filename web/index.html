@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>复盘通 ReviewPal · 目标复盘打卡工具</title>
+<title>复盘通 · 目标复盘打卡工具</title>
 <meta name="color-scheme" content="light dark">
 <!--
-  复盘通 ReviewPal · 单文件前端（Apple HIG 风格）
+  复盘通 · 单文件前端（Apple HIG 风格）
   动线：每日进步五问 -> 推进度判定 -> 每日复盘卡 -> 我的打卡墙
   布局：居中轮播，点击两侧卡片切换（键盘 ← → 也可）。
   零依赖：纯 HTML + CSS + 原生 JS；已接后端 /api/*，Mock 为断网保底。
@@ -283,12 +283,13 @@
 </style>
 <div class="wrap">
   <header class="topbar">
-    <div class="brand">复盘通 ReviewPal<small>目标复盘与每日打卡工具 · 五问 → 推进度 → 复盘卡 → 打卡墙</small></div>
+    <div class="brand"><span id="rpBrandTitle">复盘通</span><small>目标复盘与每日打卡工具 · 五问 → 推进度 → 复盘卡 → 打卡墙</small></div>
     <div class="grow"></div>
     <span class="pill" id="serverPill"><span class="dot"></span> 正在检测后端…</span>
     <div class="seg" id="themSw">
       <button data-t="warm" onclick="setTheme('warm')">暖色极简</button>
       <button data-t="cyber" onclick="setTheme('cyber')">赛博朋克</button>
+      <button data-t="ios" onclick="setTheme('ios')">晴空蓝调</button>
     </div>
     <button class="btn ghost mini" onclick="showSettings()">⚙ 模型设置</button>
     <button class="btn ghost mini" onclick="toggleLabels()">显示 / 隐藏标注</button>
@@ -368,12 +369,9 @@
             </aside>
           </div>
         </section>
-      </div>
-    </section>    <section class="slide" data-cap="人在回路">
-      <div class="panelgrid one">
         <section class="block">
           <span class="tag">区块 3 <span class="kind">人在回路</span></span>
-          <h2 class="btitle">确认与修改</h2>
+          <h2 class="btitle">人在回路</h2>
           <p class="bsub">AI 整理的结论，你说了算</p>
           <div class="doc">对应文档 §2.2 底层 · §11.1 字段来源 · §8.1 P0 第 2、5 项</div>
           <p class="note"><b>这是什么：</b>结论在这里逐条摊开、每一格都能直接改；改动会记进 <code>edit_history</code> 并反哺下一轮——这就是「人在回路」。</p>
@@ -403,7 +401,7 @@
           <div class="cardcol"><div class="cardmain">
           <div class="gcard" id="gcard">
             <div class="gaccent"></div>
-            <div class="ttl">REVIEWPAL · 每日复盘卡</div>
+            <div class="ttl">复盘通 · 每日复盘卡</div>
             <h3 id="cardDate">— · 每日进步</h3>
             <div class="gsec"><div class="lab">① 我的目标</div><div class="val" id="cardGoal">（待生成）</div></div>
             <div class="gsec"><div class="lab">② 原本的计划</div><div class="val" id="cardPlan">（待生成）</div></div>
@@ -487,7 +485,7 @@
         <tr><th>区块</th><th>名称</th><th>说明</th><th>档位</th></tr>
         <tr><td>1</td><td>每日五问</td><td>按五问分步引导输入</td><td class="p0">P0 第 1 项</td></tr>
         <tr><td>2</td><td>推进度判定</td><td>五档判定 + AI 思考流</td><td class="p0">P0 第 3 项</td></tr>
-        <tr><td>3</td><td>确认与修改</td><td>逐条可改 + 确认并保存（自动入库）</td><td class="p0">P0 第 2 / 5 / 7 项</td></tr>
+        <tr><td>3</td><td>人在回路</td><td>逐条可改 + 确认并保存（自动入库）</td><td class="p0">P0 第 2 / 5 / 7 项</td></tr>
         <tr><td>4</td><td>每日复盘卡</td><td>五问排版 + 鸡汤位预留 + 导出 PNG + 上墙</td><td class="p0">P0 第 6 项</td></tr>
         <tr><td>5</td><td>坚持打卡</td><td>月热力图（无色→红色）+ 连续天数</td><td>P1-A</td></tr>
         <tr><td>6</td><td>我的打卡墙</td><td>全部 / 按推进度筛选 + 搜索 + 回看 + 删除</td><td class="p0">P0 第 7、9 项</td></tr>
@@ -526,7 +524,7 @@
 
   <p class="footnote">
     数据默认只保存在本机 <code>reviewpal.db</code> 这一个文件里：<br><code id="dbPath">（读取中…）</code><br>
-    打卡墙只展示<b>你自己</b>的卡片（本地私有、不对外公开）；本产品只做目标复盘与打卡，不提供医疗或专业咨询服务。
+    打卡墙只展示<b>你自己</b>的卡片（本地私有、不对外公开）。
   </p>
 </div>
 
@@ -872,7 +870,7 @@ function renderWall(){
       +'<div class="wt">'+esc(r.date||'')+badge+(r.demo?' <span class="demo-badge">示例</span>':'')+'</div>'
       +'<div class="ws">'+esc(String(r.summary||'（无摘要）').slice(0,70))+'</div>'
       +'<div class="ws" style="color:var(--muted)">明日：'+esc(String(r.tomorrow_focus||'（未填）').slice(0,46))+'</div>'
-      +'<div class="wp">'+esc(p.label||'—')+' · '+(p.score!=null?p.score:'—')+' 分</div>'
+      +'<div class="wp" data-score="'+(p.score!=null?p.score:'')+'">'+esc(p.label||'—')+' · '+(p.score!=null?p.score:'—')+' 分</div>'
       +act+'</div>';
   }).join('');
   box.querySelectorAll('[data-rec]').forEach(function(el){ el.addEventListener('click', function(){ replayRecord(Number(el.dataset.rec)); }); });
@@ -1009,7 +1007,7 @@ function exportCard(){
   const t=function(id,fb){ const e=document.getElementById(id); return (e&&e.textContent.trim())||fb; };
   x.fillStyle='#FFFFFF'; x.fillRect(0,0,W,H);
   x.fillStyle=mood; x.fillRect(48,52,W-96,10);
-  x.fillStyle='#8A817C'; x.font='600 19px "Microsoft YaHei",sans-serif'; x.fillText('REVIEWPAL · 每日复盘卡',48,104);
+  x.fillStyle='#8A817C'; x.font='600 19px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 每日复盘卡',48,104);
   x.fillStyle='#1D1D1F'; x.font='700 34px "Microsoft YaHei",sans-serif'; x.fillText(t('cardDate','')+' · 每日进步',48,156);
   let yy=214;
   const section=function(label,text,lines){ x.fillStyle=mood; x.font='700 19px "Microsoft YaHei",sans-serif'; x.fillText(label,48,yy); yy+=30;
@@ -1028,7 +1026,7 @@ function exportCard(){
   x.fillStyle='#8A817C'; x.font='600 16px "Microsoft YaHei",sans-serif'; x.fillText('今日一句',64,yy+10);
   x.fillStyle='#4A4A4A'; x.font='italic 18px "Microsoft YaHei",sans-serif';
   __wrapText(x, t('cardQuote',''), 64, yy+38, W-128, 26, 2);
-  x.fillStyle='#C9C2BC'; x.font='16px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 ReviewPal · 目标复盘与每日打卡工具',48,H-52);
+  x.fillStyle='#C9C2BC'; x.font='16px "Microsoft YaHei",sans-serif'; x.fillText('复盘通 · 目标复盘与每日打卡工具',48,H-52);
   const a=document.createElement('a'); a.download='复盘通_每日复盘卡_'+ymd(new Date())+'.png'; a.href=cv.toDataURL('image/png'); a.click();
   toast('卡片已导出为 PNG（含鸡汤占位框）');
 }
@@ -1106,5 +1104,9 @@ setWallFilter('all');
 loadConfig(); loadRecords();
 (function(){ const mn=document.getElementById('myName'); if(mn) mn.value=myName(); document.querySelectorAll('#qList li').forEach(function(li){ li.addEventListener('click', function(){ goStep(Number(li.dataset.q)); }); }); })();
 </script>
+  <script src="rp-core.js"></script>
+<script src="local.js"></script>
+<script src="icons.js"></script>
+  <script src="enhance.js"></script>
 </body>
 </html>

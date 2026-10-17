@@ -1,0 +1,384 @@
+{
+  "name": "复盘通 ReviewPal · 脱敏示例数据（测试数据）",
+  "version": "2.0",
+  "schema_version": "3.0",
+  "note": "全部为合成的脱敏数据，不含任何真实用户内容；推进度字段由 web/rp-core.js 的 inferProgress 生成并经 validate 校验。可用于演示打卡墙 / 热力图 / 不同推进度筛选。",
+  "count": 10,
+  "records": [
+    {
+      "id": "r_20260921_001",
+      "date": "2026-09-21",
+      "created_at": "2026-09-21 21:30:00",
+      "answers": {
+        "goal_long": "半年内通过雅思 7.0",
+        "goal_short": "本周完成 3 套阅读真题",
+        "plan": "做 1 套阅读真题 + 背 50 个词",
+        "actual": "连做 2 套阅读真题，还顺手整理了错题本",
+        "alignment": "yes",
+        "keep": "真题限时训练 + 错题当天归类",
+        "improve": "背单词总拖到晚上，容易被打断",
+        "tomorrow": "上午 9:00 先背 50 个词，再做 1 套听力"
+      },
+      "summary": "阅读超额，词汇拖到晚上是唯一漏洞。",
+      "key_insight": "差距不在阅读量，而在词汇任务的时间安排——越晚越容易被挤掉。",
+      "keep": [
+        "真题限时 60 分钟，做完即停",
+        "错题当天归类到错题本"
+      ],
+      "improve": [
+        "背单词固定放在上午第一件事",
+        "用手机 App 而不是纸质词表"
+      ],
+      "tomorrow_focus": "上午 9:00 背 50 个单词（限 30 分钟）",
+      "tags": [
+        "学习",
+        "英语"
+      ],
+      "progress": {
+        "status": "advance",
+        "label": "超额达成",
+        "score": 100,
+        "reason": "第 3 问：助力目标，且出现超额信号"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20260924_002",
+      "date": "2026-09-24",
+      "created_at": "2026-09-24 21:30:00",
+      "answers": {
+        "goal_long": "Q4 完成产品 V2 上线",
+        "goal_short": "本周把接口文档补齐",
+        "plan": "写完 3 个模块的接口文档",
+        "actual": "按计划完成了 3 个模块的接口文档，评审通过",
+        "alignment": "yes",
+        "keep": "按模块粒度估时",
+        "improve": "评审前留 30 分钟自检字段命名",
+        "tomorrow": "上午先把下周排期表填完"
+      },
+      "summary": "接口文档按计划交付并通过评审。",
+      "key_insight": "把大任务切到\"模块\"粒度后估时更准，今天没有出现返工。",
+      "keep": [
+        "按模块粒度估时，而不是按整天估算"
+      ],
+      "improve": [
+        "评审前留 30 分钟自检字段命名"
+      ],
+      "tomorrow_focus": "上午 9:30 填完下周排期表（30 分钟）",
+      "tags": [
+        "工作"
+      ],
+      "progress": {
+        "status": "on_track",
+        "label": "按计划达成",
+        "score": 86,
+        "reason": "第 3 问：助力目标"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20260927_003",
+      "date": "2026-09-27",
+      "created_at": "2026-09-27 21:30:00",
+      "answers": {
+        "goal_long": "年内写完 10 万字长文",
+        "goal_short": "本周写 5000 字",
+        "plan": "写 2000 字第三章",
+        "actual": "只做了 800 字，第三章开个头就卡住了",
+        "alignment": "partial",
+        "keep": "开工前先写 3 行段落级提纲",
+        "improve": "把\"写 2000 字\"改成\"写 3 个小节\"",
+        "tomorrow": "下午 2:00 先补第三章提纲，再写 1000 字"
+      },
+      "summary": "第三章开了个头，只完成计划的四成。",
+      "key_insight": "卡点不在时间，而在\"第三章没有段落级提纲\"——没有提纲就很难往下写。",
+      "keep": [
+        "开工前先写 3 行段落级提纲"
+      ],
+      "improve": [
+        "把\"写 2000 字\"改成\"写 3 个小节\""
+      ],
+      "tomorrow_focus": "下午 2:00 先补第三章提纲（30 分钟），再写 1000 字",
+      "tags": [
+        "写作"
+      ],
+      "progress": {
+        "status": "partial",
+        "label": "部分完成",
+        "score": 66,
+        "reason": "第 3 问：部分助力目标"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20261001_004",
+      "date": "2026-10-01",
+      "created_at": "2026-10-01 21:30:00",
+      "answers": {
+        "goal_long": "三个月内体重降 5kg",
+        "goal_short": "本周运动 3 次",
+        "plan": "晚上跑 5 公里",
+        "actual": "今天没做，加班到 10 点就没动",
+        "alignment": "no",
+        "keep": "把运动排在早晨，先于工作",
+        "improve": "加班日改成 15 分钟室内训练保底",
+        "tomorrow": "早上 7:00 先做 20 分钟室内训练"
+      },
+      "summary": "计划落空：加班挤掉了运动。",
+      "key_insight": "问题不是\"不想动\"，而是把运动放在了下班之后——它是当天最容易被挤掉的位置。",
+      "keep": [
+        "把运动排在早晨，先于工作"
+      ],
+      "improve": [
+        "加班日改成 15 分钟室内训练保底"
+      ],
+      "tomorrow_focus": "早上 7:00 做 20 分钟室内训练",
+      "tags": [
+        "运动"
+      ],
+      "progress": {
+        "status": "stalled",
+        "label": "未推进",
+        "score": 24,
+        "reason": "第 3 问：今天的行为无助于目标实现"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20261004_005",
+      "date": "2026-10-04",
+      "created_at": "2026-10-04 21:30:00",
+      "answers": {
+        "goal_long": "Q4 完成产品 V2 上线",
+        "goal_short": "本周定稿首页交互",
+        "plan": "定稿首页 3 个关键流程",
+        "actual": "临时被拉去做数据报表，首页方向做错，需要返工重做",
+        "alignment": null,
+        "keep": "上午先锁 2 小时不被打断",
+        "improve": "临时需求先记进清单，不当场开工",
+        "tomorrow": "上午 9:30 重做首页第一个流程图，先画再评"
+      },
+      "summary": "被临时任务打断，首页返工重做。",
+      "key_insight": "偏离来自\"没有拒绝临时插入的需求\"——一天被拆成两段，方向也跟着摇。",
+      "keep": [
+        "上午先锁 2 小时不被打断"
+      ],
+      "improve": [
+        "临时需求先记进清单，不当场开工"
+      ],
+      "tomorrow_focus": "上午 9:30 重画首页第一个流程图（先画再评）",
+      "tags": [
+        "工作"
+      ],
+      "progress": {
+        "status": "off_track",
+        "label": "偏离目标",
+        "score": 42,
+        "reason": "命中偏离信号：做错、返工"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20261007_006",
+      "date": "2026-10-07",
+      "created_at": "2026-10-07 21:30:00",
+      "answers": {
+        "goal_long": "半年内通过雅思 7.0",
+        "goal_short": "本周完成 2 套听力",
+        "plan": "做 1 套听力真题",
+        "actual": "做完 1 套听力并按计划订正了错题",
+        "alignment": "yes",
+        "keep": "做完立刻订正，不过夜",
+        "improve": "听力长对话单独记速记符号",
+        "tomorrow": "上午 9:00 做 1 套听力，下午订正"
+      },
+      "summary": "听力按计划完成并订正。",
+      "key_insight": "订正比做题更花时间但仍按计划收尾——说明\"限时\"这条规则生效了。",
+      "keep": [
+        "做完立刻订正，不过夜"
+      ],
+      "improve": [
+        "听力长对话单独记速记符号"
+      ],
+      "tomorrow_focus": "上午 9:00 做 1 套听力（限时 40 分钟），下午订正",
+      "tags": [
+        "学习",
+        "英语"
+      ],
+      "progress": {
+        "status": "on_track",
+        "label": "按计划达成",
+        "score": 86,
+        "reason": "第 3 问：助力目标"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20261010_007",
+      "date": "2026-10-10",
+      "created_at": "2026-10-10 21:30:00",
+      "answers": {
+        "goal_long": "Q4 完成产品 V2 上线",
+        "goal_short": "本周完成登录改版",
+        "plan": "完成登录页改版并自测",
+        "actual": "提前完成登录页改版，还顺带做完埋点接入",
+        "alignment": "yes",
+        "keep": "先沉淀可复用组件，再写业务页",
+        "improve": "埋点字段提前一天和后端对齐",
+        "tomorrow": "上午 10:00 用同一套组件改完注册页"
+      },
+      "summary": "登录改版提前完成，顺手把埋点也接好了。",
+      "key_insight": "提前来自\"先搭好组件\"的复用——后面的页面都是组装，不再是重写。",
+      "keep": [
+        "先沉淀可复用组件，再写业务页"
+      ],
+      "improve": [
+        "埋点字段提前一天和后端对齐"
+      ],
+      "tomorrow_focus": "上午 10:00 用同一套组件改完注册页",
+      "tags": [
+        "工作"
+      ],
+      "progress": {
+        "status": "advance",
+        "label": "超额达成",
+        "score": 100,
+        "reason": "第 3 问：助力目标，且出现超额信号"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20261012_008",
+      "date": "2026-10-12",
+      "created_at": "2026-10-12 21:30:00",
+      "answers": {
+        "goal_long": "三个月内体重降 5kg",
+        "goal_short": "本周运动 3 次",
+        "plan": "跑 5 公里 + 拉伸",
+        "actual": "只做了一半，跑了 2.5 公里就下雨停了",
+        "alignment": "partial",
+        "keep": "跑前看天气，提前决定室内还是户外",
+        "improve": "把\"跑 5 公里\"拆成\"两次 2.5 公里\"",
+        "tomorrow": "晚上 8:00 室内循环训练 25 分钟"
+      },
+      "summary": "跑了 2.5 公里被雨中断，完成一半。",
+      "key_insight": "卡点是不可控天气——户外计划没有 Plan B，一出状况当天就废一半。",
+      "keep": [
+        "跑前看天气，提前决定室内还是户外"
+      ],
+      "improve": [
+        "把\"跑 5 公里\"拆成\"两次 2.5 公里\""
+      ],
+      "tomorrow_focus": "晚上 8:00 室内循环训练 25 分钟",
+      "tags": [
+        "运动"
+      ],
+      "progress": {
+        "status": "partial",
+        "label": "部分完成",
+        "score": 66,
+        "reason": "第 3 问：部分助力目标"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20261014_009",
+      "date": "2026-10-14",
+      "created_at": "2026-10-14 21:30:00",
+      "answers": {
+        "goal_long": "年内写完 10 万字长文",
+        "goal_short": "本周写 5000 字",
+        "plan": "写 1500 字第四章",
+        "actual": "写完 1500 字第四章，章节过渡也顺了一遍",
+        "alignment": "yes",
+        "keep": "每章先写 3 行提纲再动笔",
+        "improve": "写完留 10 分钟顺章节过渡",
+        "tomorrow": "下午 2:00 写第五章前 800 字"
+      },
+      "summary": "第四章 1500 字按计划写完。",
+      "key_insight": "有了段落级提纲后写起来不再停顿——提纲是效率开关。",
+      "keep": [
+        "每章先写 3 行提纲再动笔"
+      ],
+      "improve": [
+        "写完留 10 分钟顺章节过渡"
+      ],
+      "tomorrow_focus": "下午 2:00 写第五章前 800 字",
+      "tags": [
+        "写作"
+      ],
+      "progress": {
+        "status": "on_track",
+        "label": "按计划达成",
+        "score": 86,
+        "reason": "第 3 问：助力目标"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    },
+    {
+      "id": "r_20261016_010",
+      "date": "2026-10-16",
+      "created_at": "2026-10-16 21:30:00",
+      "answers": {
+        "goal_long": "半年内通过雅思 7.0",
+        "goal_short": "本周完成 3 套阅读真题",
+        "plan": "做 1 套阅读",
+        "actual": "连做 2 套阅读真题，比计划多完成 1 套",
+        "alignment": "yes",
+        "keep": "状态好时多做一套，但当天不再加码",
+        "improve": "连续两天高强度后安排一次轻量复习",
+        "tomorrow": "上午 9:00 只做错题复盘，不加新题"
+      },
+      "summary": "阅读连做两套，超出计划一套。",
+      "key_insight": "超额来自\"状态好的当天不设上限\"——但别把明天的时间提前用掉。",
+      "keep": [
+        "状态好时多做一套，但当天不再加码"
+      ],
+      "improve": [
+        "连续两天高强度后安排一次轻量复习"
+      ],
+      "tomorrow_focus": "上午 9:00 只做错题复盘（不加新题）",
+      "tags": [
+        "学习",
+        "英语"
+      ],
+      "progress": {
+        "status": "advance",
+        "label": "超额达成",
+        "score": 100,
+        "reason": "第 3 问：助力目标，且出现超额信号"
+      },
+      "quote": null,
+      "public": false,
+      "user_edited": false,
+      "edit_history": []
+    }
+  ]
+}

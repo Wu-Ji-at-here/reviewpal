@@ -1,5 +1,20 @@
+# 环境 / 密钥
 .env
+.env.local
+
+# 依赖与构建产物
 node_modules/
+mobile/node_modules/
+mobile/android/build/
+mobile/android/app/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+
+# 数据库与日志
 data/*.db
 data/*.db-journal
 *.log
+
+# 安装包：随包交付，但不入库（见 dist/）
+dist/
+*.apk

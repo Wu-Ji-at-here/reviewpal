@@ -1,70 +1,104 @@
 # 复盘通 ReviewPal · 目标复盘打卡工具
 
-> OPC 黑客松参赛作品　|　版本 V1.18（2026-10）
+> OPC 黑客松参赛作品 ｜ 版本 **V2.0**（2026-10）｜ **本地优先**：可安装 Android App + 桌面网页版
 
-**一句话**：把「每日进步五问」变成一张「每日复盘卡」的打卡工具——填入五问 → 自动判定**推进度** → 生成可导出 / 可保存的复盘卡 → 沉淀成打卡墙（按推进度筛选）。
-**不含任何心理 / 情绪功能**（唯一例外：卡片末尾一句可更换的鸡汤）。
+**一句话**：把「每日进步五问」变成打卡卡片的工具 —— 填五问 → 自动判定**推进度** → 生成可导出 PNG 的复盘卡 → 沉淀成打卡墙（热力图 + 连续天数）。
+**不含任何心理 / 情绪功能**（唯一例外：卡片末尾一句可更换的鸡汤，内置 100 句可随机 / 手动挑选）。
+
+---
 
 ## 亮点
-- **零依赖后端**：只用 Node 内置能力（`node:http`、`node:sqlite`、`fetch`），无需 `npm install`。
-- **单文件前端**：`web/index.html` 纯 HTML + CSS + 原生 JS，无框架。
-- **人机协同可视化**：AI 思考流；结论逐条可改并记入 `edit_history`（人在回路）。
-- **产出可带走**：复盘卡一键导出 PNG；100 句鸡汤随机轮换，也可手动挑一句。
-- **坚持可视化**：月热力图 + 连续天数；打卡墙按推进度筛选 + 搜索 + 删除。
-- **双轨运行**：真实模型（DeepSeek 等）/ Mock 兜底；**API Key 只存后端**，前端只拿掩码。
 
-## 怎么跑（30 秒）
-1. 准备 Node（**建议 v24，最低 v22.5**，项目用了内置 `node:sqlite`）。本机路径：`D:\software\node.js\node.exe`。
-2. 双击 **`start.bat`**（没有 `.env` 会自动用 `.env.example` 生成，默认 **Mock** 模式）。
-3. 浏览器打开 **http://localhost:8787**。
+- **本地优先的 Android App**（Capacitor 7）：数据存在手机本地（IndexedDB），**离线可用**，**只在调模型时联网**；**API Key 存 Android Keystore**，明文不落盘。
+- **每日提醒**：本地通知，可开关 / 可设时间（闹钟式滚轮）/ 可发测试提醒。
+- **零依赖 + 零构建**：后端只用 Node 内置能力（`node:http` / `node:sqlite` / `fetch`），**不需要 `npm install`**；前端是原生 JS，无框架、无打包步骤。
+- **推进度体系**：**用户自评优先、关键词兜底** → 5 档（超额达成 / 按计划达成 / 部分完成 / 偏离目标 / 未推进）+ 0-100 分 + 判定依据。
+- **人机协同可视化**：AI 思考流；结论逐条可改，并记入 `edit_history`（人在回路）。
+- **坚持可视化**：月热力图（跟随主题色）+ 近 7 天 sparkline + 连续天数；打卡墙按推进度筛选。
+- **产出可带走**：复盘卡一键导出 PNG。
+- **双轨运行**：真实模型（DeepSeek / 智谱 / Kimi / OpenAI / 自定义）/ **Mock 兜底**。
+- **三套主题**：暖色极简 / 赛博朋克 / 晴空蓝调（可跟随系统）。
 
-> 端口默认 8787，可用环境变量 `PORT` 覆盖。
+---
+
+## 三种用法
+
+### 1) 装到手机上（推荐 · 本地优先）
+直接安装随包的 `dist/ReviewPal-debug.apk`（安卓侧载）→ 详见 **`如何运行.md`**。
+App 内：底部 4 个标签（每日五问 / 复盘卡 / 打卡墙 / 设置）；设置页可切主题、开每日提醒、填模型服务。
+
+### 2) 电脑上跑网页版（无需装 App）
+1. 准备 Node（**建议 v24，最低 v22.5**，项目用了内置 `node:sqlite`）
+2. 双击 **`start.bat`**（没有 `.env` 会自动用 `.env.example` 生成，默认 **Mock** 模式）
+3. 浏览器打开 **http://localhost:8787** ← 从这里的地址打开，**不要**双击 `web/index.html`
+
+> 端口默认 8787，可用环境变量 `PORT` 覆盖。真实模型需在 `.env` 填 Key（Key 只在后端，前端只拿掩码）。
+
+### 3) 自己打包 Android App（开发者）
+需要 JDK 21 + Android SDK。流程：
+```
+# 1. 前端 → 壳：改完 web/* 后拷进 mobile/www
+copy web\*.js  mobile\www\
+copy web\index.html mobile\www\
+# 2. 同步原生工程（改前端后必须做，否则包内还是旧前端）
+cd mobile && npx cap sync android
+# 3. 出包
+cd android && gradlew.bat assembleDebug
+# 4. 产物
+#    mobile\android\app\build\outputs\apk\debug\app-debug.apk
+```
+
+---
 
 ## 目录结构
+
 ```
-.
-├─ start.bat                # 双击启动
-├─ package.json             # 无依赖
-├─ .env.example             # 复制为 .env 再填 Key
-├─ server/                  # 零依赖后端
-│  ├─ index.js              # 路由 + 调模型（Key 只在后端）
-│  ├─ classify.js           # 推进度判定（自评优先、关键词兜底）
-│  ├─ schema.js             # 数据契约校验（两阶段）
-│  ├─ db.js                 # SQLite 读写
-│  └─ prompts/system-v1.md  # System Prompt
-├─ web/index.html           # 单文件前端（含全部 CSS/JS）
-├─ data/                    # SQLite 落库目录（运行时生成）
-├─ start.sh                 # macOS / Linux 启动脚本
-├─ docs/                    # 设计文档 / 数据契约 / 部署指南 / 协作手册
-├─ worklog.md               # 开发日志（人机协同证据）
-└─ LICENSE
+reviewpal/
+├─ README.md                  本文件
+├─ 如何运行.md                 运行 + 安装说明（含 APK 侧载）
+├─ start.bat / start.sh       一键启动（后端）
+├─ .env.example               复制成 .env 再填（真实模型的 Key）
+├─ package.json               没有依赖
+├─ web/                       桌面 / 网页前端（原生 JS，零构建）
+│  ├─ index.html              入口（引用下面 4 个 js）
+│  ├─ rp-core.js              护栏纯函数（推进度推断 / 契约校验）
+│  ├─ local.js                本地优先存储层（App 内走 IndexedDB）
+│  ├─ icons.js                底部图标（可整体替换）
+│  └─ enhance.js              分层增强（移动端导航 / 提醒 / 主题 / 视觉）
+├─ server/                    零依赖 Node 后端
+│  ├─ index.js                路由 + 调模型（网页版 Key 只在后端）
+│  ├─ classify.js             推进度判定（用户自评优先、关键词兜底）
+│  ├─ schema.js               数据契约校验
+│  ├─ db.js                   SQLite 读写
+│  └─ prompts/system-v1.md    System Prompt
+├─ tests/rp-core.test.js      核心用例（15 条）
+├─ mobile/                    Capacitor 7 工程（Android App）
+│  ├─ capacitor.config.json   appId / appName / webDir
+│  ├─ www/                    ← web 的构建产物（index/local/enhance/icons/rp-core + prompts）
+│  └─ android/                原生工程（Manifest 权限、通知、Keystore 插件）
+└─ data/reviewpal.db          网页版数据库（跑起来后自动生成）
 ```
 
-## 接入真实模型（可选）
-- 界面右上角「⚙ 模型设置」：填 `API Key`（只写后端 `.env`，前端只看到掩码）→「保存并启用真实模型」。
-- 或直接改 `.env`：`MOCK=0`、`DEEPSEEK_API_KEY=sk-...`、`MODEL_ID=...`、`DEEPSEEK_BASE_URL=...`。
+---
 
-## 核心功能
-| 模块 | 说明 |
+## 测试
+
+```
+node tests/rp-core.test.js
+# => 15 passed, 0 failed
+```
+
+覆盖 `rp-core.js` 的推进度推断与契约校验（`inferProgress` / `validate`）；`web/local.js` 与后端 `server/*` 都委托同一套护栏。
+
+---
+
+## 版本
+
+| 版本 | 要点 |
 |---|---|
-| 每日五问 | 一步一问；长期/短期目标、计划、实际、保持/优化、明日计划 |
-| 推进度 | 5 档（超额达成 / 按计划达成 / 部分完成 / 偏离目标 / 未推进）+ 0–100 分 |
-| 确认与修改 | AI 结论逐条可改，改动记入 `edit_history` |
-| 每日复盘卡 | 五问排版 + 推进度 + 鸡汤位；导出 PNG |
-| 月热力图 | 每格一天，颜色深浅=推进度；连续天数不清零只降级 |
-| 打卡墙 | 全部记录，按推进度筛选 + 搜索 + 回看 + 删除 |
+| V1.18 | 网页版单文件前端 + 零依赖 Node 后端（OPC 初版） |
+| **V2.0** | **新增可安装 Android App（Capacitor 7）**：本地优先 IndexedDB、Key 入 Android Keystore、每日提醒、移动端导航与视觉改版、三套主题、核心护栏用例 |
 
-## 数据与隐私
-- 数据只存**本机** SQLite 单文件：`data/reviewpal.db`（页脚显示真实路径）。
-- 调用 AI 时**只发送本轮填写的文本**；不上传历史库。
-- **不对外公开**、无社区功能。
+## 许可
 
-## 自检
-- `web/index.html` 内联脚本：`node --check` 通过。
-- 页面 `GET /` 返回 200；`/api/health`、`/api/records`、`/api/review/generate` 正常。
-
-## 文档
-见 `docs/`：设计文档 V1.18（md + docx）、数据契约 `review-record.schema.json`、公网部署指南、AI 协作手册。
-
-## License
-MIT，见 `LICENSE`；第三方许可见 `THIRD_PARTY_LICENSES.md`。
+见 `LICENSE` 与 `THIRD_PARTY_LICENSES.md`。

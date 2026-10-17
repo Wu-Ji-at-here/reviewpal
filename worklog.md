@@ -4,6 +4,13 @@
 
 | 日期 | 任务模块 | 使用的 AI 工具 | 人类决策点 | AI 产出内容 |
 |---|---|---|---|---|
+| 10/17 | **① 可安装 Android App（Capacitor 7）** | Codex（人类决策：本地优先 / Key 放手机 / 保留网页版） | 判定"要做成能装进手机的打卡工具" → 选 **Capacitor 7** 打 Android APK；数据存手机 IndexedDB（离线可用）、**API Key 存 Android Keystore**；桌面网页版并行保留（网页模式不生效） | `mobile/` 工程 + `web/local.js` 本地优先层 + 3 个原生插件（secure-storage / app / local-notifications） |
+| 10/17 | **移动端导航与设置改版** | Codex（人类逐项 UI 裁决） | 判定手机端要"一眼看懂"的信息架构 → 底部 4 标签、固定顶栏=当前页名、设置页改 iOS 分组内嵌列表；**安卓返回键接管**；删除二次确认 | `web/enhance.js`（V1.19 + V1.21~V1.25） |
+| 10/17 | **每日提醒（本地通知）** | Codex（人类提出"要能提醒"） | 判定提醒必须"本地通知 + 可测试 + 可改时间" → 闹钟式时/分滚轮、开关、测试提醒、`getPending()` 回报"待触发 N 条"、开机自动重排 | `enhance.js` V1.26/V1.27 + Manifest 通知 / 精确闹钟权限 |
+| 10/17 | **视觉 V2 + 第三套主题** | Codex（人类："按默认"） | 判定热力图 / 进度环要"跟随主题色"才统一 → 热力图跟主题色、推进度渐变圆环 + 数字滚动、近 7 天 sparkline、打卡墙两列 + 分数小环；**新增「晴空蓝调」** | `enhance.js` 视觉层 |
+| 10/17 | **护栏纯函数 + 用例** | Codex | 判定"判定逻辑散在前后端会漂移" → 抽出 `rp-core.js`（`inferProgress` / `validate`）前后端共用，并补 **15 条**核心用例 | `web/rp-core.js` + `tests/rp-core.test.js`（15/15 通过） |
+| 10/17 | **出包与验证** | Codex | 判定"装到手机上必须验包内前端是最新" → 立规矩：**改 web → 拷 mobile/www → `cap sync` → assembleDebug**；并对包内 `assets/public` 与源码做**逐字节比对** | `ReviewPal-debug.apk`（BUILD SUCCESSFUL，包内与源码逐字节一致） |
+| 10/17 | 文档升版 | Codex（人类：版本号 V2.0） | 判定本轮"网页 Demo → 可安装 App"属量级变化 → 版本升 **V2.0**，README 与运行/安装说明同步 | `README.md` 重写（V2.0）、`如何运行.md` 补 APK 侧载、worklog 追加 |
 | 10/16 | **区块3 字段默认清空** | Codex（人类指出"这里默认就有字？"） | 判定"一打开就像已生成"是误导 → 6 格改为**默认空白 + 灰色占位提示**（点「开始复盘」后由 AI 填），未生成前不出现任何写死文案 | web/index.html：contenteditable 清空 + data-ph + `:empty:before` 占位 CSS |
 | 10/16 | **底部说明去编号 + 标注默认隐藏** | Codex（人类提出） | 判定"第 N 组"是冗余（圆点已表达顺序）→ 说明行只留名字；并判定"评委视角更干净"→ **标注默认隐藏**，需要时点右上角「显示 / 隐藏标注」 | web/index.html：data-cap 去"第 N 组"、body 默认加 labels-off |
 | 10/16 | **真实调用失败修复 + 自动聚焦** | Codex（人类反馈截图） | 判定"fetch failed"根因是**后端进程无外网**（被以沙箱方式启动）→ 用主机网络重启后端即恢复真实调用；并给失败信息加上原因/离线提示；另按人类要求"点右栏问题即进入输入"→ 切换问题后**自动聚焦输入框** | 后端以非沙箱重启 + server/index.js 错误细化 + 前端 goStep/focusCurrent |
@@ -48,7 +55,12 @@
 | 10/14 | 完整版补齐 | Codex | 决定用 Canvas 原生出图替代 html2canvas，避免引入依赖 | 卡片 PNG 导出、记录回看、标签检索 |
 | 10/14 | **设计评审响应** | Codex（人类提出） | 收到反馈"情绪急救整屏切换太突然"→ 判定为**交互层面的设计缺陷**（不是审美取舍）；决策：不删除该设计，降级为"原地柔化 + 可选半屏"，并补齐动效安全约束 | 文档 §2.1 三级呈现、§10.1 熔断呈现、附件 D.1 新 CSS、应用端 L1/L2 实现 |
 
-## 待办（按 P0 八项验收）
+| 10/16 | **Android App（本地优先）** | Codex（人类拍板：搞 APK / 本地优先 / Key 放手机） | 判定"手机要真能用，就不能依赖电脑常开" → 选 Capacitor + 本地优先：数据存手机、模型直连 | `mobile/` Capacitor 工程 + `web/local.js`（就地应答 `/api` + 直连模型） |
+| 10/16 | **Android 打包工具链** | Codex（人类批准提权、批准换源） | 判定官方源下载过慢 → 换微软源 / 腾讯云镜像 | 装 JDK21 + Android SDK35 + cmdline-tools；Gradle 走镜像；出 debug APK |
+| 10/16 | **V1.19 移动端体验（10 条）** | Codex（人类一次性全部接纳） | 判定"睡前 2-3 分钟"场景中手机才是主战场 | `web/enhance.js`：圆环+档位符号 / 空态引导 / 本周摘要 / 热力图点击 / 跟随系统 / Enter 前进 + 草稿自动保存 / 2 倍导出 / 滑动切换 |
+| 10/16 | **Key 加密存储** | Codex（人类要求） | 判定 Key 不能只放明文 → 用 Android Keystore | `@aparajita/capacitor-secure-storage@7.1.6` 接入 `local.js` |
+| 10/16 | **V1.20 移动端导航与扁平化** | Codex（人类逐条反馈真机截图） | 判定"手机无物理键盘、顶栏太占地方、卡片样式偏桌面" → 移动端起底部标签栏 + 扁平化 + 隐藏冗余 | web/enhance.js：底部标签栏 / 顶栏瘦身 / 去卡片 / 隐藏五问清单 / 热力图文案 / 上一问·下一问 |
+| 10/16 | **App 内"后端未启动"误报修复** | Codex（人类截图） | 判定本地拦截层晚于主脚本加载，初始化那次 loadConfig 用了真 fetch | web/local.js：初始化后重跑 loadConfig/loadRecords + 改本地文案 |## 待办（按 P0 八项验收）
 
 - [ ] 第 0 关：把 Node 加入系统 PATH
 - [x] 第 1 关：真实模型调用（Mock 已跑通，等 Key）
