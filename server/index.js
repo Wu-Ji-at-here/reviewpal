@@ -59,6 +59,29 @@ function configSnapshot(){
   return { mock: MOCK, model: MOCK ? null : MODEL_ID, hasKey: Boolean(API_KEY), keyMask: maskKey(API_KEY), baseUrl: BASE_URL, port: PORT };
 }
 
+/* ---------- Token 用量累计（写 data/usage.json，重启不丢） ---------- */
+const USAGE_PATH = path.join(__dirname, '..', 'data', 'usage.json');
+function uZero(){ return { prompt: 0, completion: 0, total: 0, calls: 0 }; }
+function uDay(){ const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function usageLoad(){ try { return JSON.parse(fs.readFileSync(USAGE_PATH, 'utf8')) || {}; } catch (e) { return {}; } }
+function usageAdd(u){
+  if (!u || typeof u !== 'object') return;
+  const p = Number(u.prompt_tokens || 0), c = Number(u.completion_tokens || 0), tot = Number(u.total_tokens || (p + c));
+  if (!tot) return;
+  const day = uDay(), mon = day.slice(0, 7);
+  const m = usageLoad();
+  m.days = m.days || {}; m.months = m.months || {}; m.total = m.total || uZero();
+  m.days[day] = m.days[day] || uZero(); m.months[mon] = m.months[mon] || uZero();
+  const bump = (o) => { o.prompt += p; o.completion += c; o.total += tot; o.calls += 1; };
+  bump(m.days[day]); bump(m.months[mon]); bump(m.total);
+  try { fs.mkdirSync(path.dirname(USAGE_PATH), { recursive: true }); fs.writeFileSync(USAGE_PATH, JSON.stringify(m, null, 2), 'utf8'); } catch (e) {}
+}
+function usageSnapshot(){
+  const day = uDay(), mon = day.slice(0, 7), m = usageLoad();
+  return { ok: true, day: day, month: mon, mock: MOCK,
+    today: (m.days && m.days[day]) || uZero(), thisMonth: (m.months && m.months[mon]) || uZero(), total: m.total || uZero() };
+}
+
 const today = store.today;
 
 /** 剥代码围栏 → 解析 JSON */
@@ -138,6 +161,7 @@ async function callModelRaw(userPrompt, prog) {
   }
   const data = await res.json();
   const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+  usageAdd(data.usage);
   return { raw: String(content || ''), parsed: safeParse(content), usage: data.usage || null };
 }
 
@@ -214,6 +238,8 @@ const server = http.createServer(async function (req, res) {
     if (p === '/api/health') {
       return send(res, 200, { ok: true, mock: MOCK, modelId: MODEL_ID, hasKey: Boolean(API_KEY), db: store.DB_FILE, time: new Date().toISOString() });
     }
+
+    if (p === '/api/usage') return send(res, 200, usageSnapshot());
 
     /* ---- 模型设置 ---- */
     if (p === '/api/config/key' && req.method === 'POST') {

@@ -2,19 +2,23 @@
 .env
 .env.local
 
-# 依赖与构建产物
+# 依赖与生成物
 node_modules/
 mobile/node_modules/
 mobile/android/build/
 mobile/android/app/build/
 mobile/android/.gradle/
 mobile/android/local.properties
+mobile/android/capacitor-cordova-android-plugins/
+mobile/android/app/src/main/assets/
+mobile/android/app/src/main/res/xml/config.xml
 
-# 数据库与日志
+# 运行时状态与日志
 data/*.db
 data/*.db-journal
+data/usage.json
 *.log
 
-# 安装包：随包交付，但不入库（见 dist/）
+# 安装包：随包交付，但不入库
 dist/
 *.apk

@@ -35,6 +35,27 @@
   function nextId(all, date) { var c = date.replace(/-/g, ''), max = 0; all.forEach(function (r) { if (r.date === date && r.id && r.id.indexOf('r_' + c + '_') === 0) { var n = parseInt(r.id.slice(-3), 10); if (n > max) max = n; } }); return 'r_' + c + '_' + String(max + 1).padStart(3, '0'); }
   function listRecent(all, limit) { return all.slice().sort(function (a, b) { return String(b.created_at || '').localeCompare(String(a.created_at || '')); }).slice(0, limit || 62); }
 
+  /* ---- Token 用量累计（存本机 localStorage） ---- */
+  function uZero() { return { prompt: 0, completion: 0, total: 0, calls: 0 }; }
+  function uDay() { return today(); }
+  function uLoad() { try { return JSON.parse(LS.get('usage', '') || '{}') || {}; } catch (e) { return {}; } }
+  function uAdd(u) {
+    if (!u || typeof u !== 'object') return;
+    var p = Number(u.prompt_tokens || 0), c = Number(u.completion_tokens || 0), tot = Number(u.total_tokens || (p + c));
+    if (!tot) return;
+    var day = uDay(), mon = day.slice(0, 7), m = uLoad();
+    m.days = m.days || {}; m.months = m.months || {}; m.total = m.total || uZero();
+    m.days[day] = m.days[day] || uZero(); m.months[mon] = m.months[mon] || uZero();
+    var bump = function (o) { o.prompt += p; o.completion += c; o.total += tot; o.calls += 1; };
+    bump(m.days[day]); bump(m.months[mon]); bump(m.total);
+    LS.set('usage', JSON.stringify(m));
+  }
+  function uSnap() {
+    var day = uDay(), mon = day.slice(0, 7), m = uLoad();
+    return { ok: true, day: day, month: mon, mock: !cfg().key, local: true,
+      today: (m.days && m.days[day]) || uZero(), thisMonth: (m.months && m.months[mon]) || uZero(), total: m.total || uZero() };
+  }
+
   var LEVELS = { advance: { label: '超额达成', score: 92 }, on_track: { label: '按计划达成', score: 78 }, partial: { label: '部分完成', score: 58 }, off_track: { label: '偏离目标', score: 34 }, stalled: { label: '未推进', score: 16 } };
   var STALLED = ['没做','没开始','摆了','拖延','忘了','没推进','荒废','啥也没','没动'], OFFTRACK = ['跑偏','偏离','做错','返工','白忙','不在计划','走错方向'], ADVANCE = ['超额','提前完成','超预期','连做','比计划多','一举','顺带做完'], PARTIAL = ['一半','部分完成','来不及','只做了','没做完','差一点','开了个头'], ONTRACK = ['完成','做完','搞定','按计划','达成','推进','打卡'];
   function hit(list, text) { return list.filter(function (w) { return text.indexOf(w) >= 0; }); }
@@ -82,6 +103,7 @@
     if (resp.status < 200 || resp.status >= 300) throw new Error('模型接口返回 ' + resp.status + '：' + String(resp.body || '').slice(0, 300));
     var data; try { data = JSON.parse(resp.body); } catch (e2) { throw new Error('模型返回不是合法 JSON'); }
     var content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    uAdd(data.usage);
     return { raw: String(content || ''), parsed: safeParse(content), usage: data.usage || null };
   }
   async function generate(answers) {
@@ -113,6 +135,7 @@
 
   async function route(pathname, method, search, body) {
     if (pathname === '/api/config') return { status: 200, obj: snap() };
+    if (pathname === '/api/usage') return { status: 200, obj: uSnap() };
     if (pathname === '/api/health') return { status: 200, obj: { ok: true, mock: !cfg().key, modelId: cfg().model, hasKey: !!cfg().key, db: '手机本地库 · IndexedDB（reviewpal）', local: true, time: new Date().toISOString() } };
     if (pathname === '/api/config/key' && method === 'POST') {
       var k = String((body || {}).key || '').trim();

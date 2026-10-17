@@ -397,6 +397,7 @@
       ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
     } catch (e) { try { onOk(); } catch (e2) {} }
   }
+  try { window.__rpConfirm = rpConfirm; } catch (e) {}
   var _del = window.deleteCard;
   if (typeof _del === 'function') { window.deleteCard = function (id) { rpConfirm('删除这张复盘卡？删除后无法恢复。', function () { try { _del(id); } catch (e) {} }); }; }
   function mergeWall() {
@@ -909,4 +910,45 @@
     try { console.log('[ReviewPal] V1.27 闹钟式时间/设置高亮已加载'); } catch (e) {}
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+
+
+/* ============ V1.28 Token 用量（手机设置页 · 模型服务分组） ============ */
+(function () {
+  if (window.__rp_v128) return; window.__rp_v128 = true;
+  var MOB = '(max-width:980px)';
+  function isMob() { try { return window.matchMedia(MOB).matches; } catch (e) { return false; } }
+  function row() {
+    var list = document.querySelector('#rpModelList'); if (!list) return null;
+    var el = list.querySelector('#rpUsage');
+    if (!el) {
+      var li = document.createElement('div'); li.className = 'rp-li';
+      li.innerHTML = '<span class="rp-k">Token 用量</span><span class="rp-v" id="rpUsage">—</span>';
+      list.appendChild(li); el = li.querySelector('#rpUsage');
+    }
+    return el;
+  }
+  function fmt(u) {
+    if (!u || !u.ok) return '读取失败';
+    var t = function (x) { return (x && x.total) || 0; };
+    if (u.mock) return 'Mock 模式无用量';
+    return '今日 ' + t(u.today) + ' · 本月 ' + t(u.thisMonth) + ' · 累计 ' + t(u.total);
+  }
+  function load(el) {
+    if (!el) return;
+    try {
+      fetch('/api/usage').then(function (r) { return r.json(); }).then(function (u) { el.textContent = fmt(u); })
+        .catch(function () { el.textContent = '读取失败'; });
+    } catch (e) { el.textContent = '读取失败'; }
+  }
+  function tick() {
+    try {
+      if (!isMob()) return;
+      var ov = document.getElementById('settingsOverlay'); if (!ov || !ov.classList.contains('show')) return;
+      load(row());
+    } catch (e) {}
+  }
+  var _s = window.showSettings;
+  if (typeof _s === 'function') { window.showSettings = function () { var r = _s.apply(this, arguments); try { setTimeout(tick, 0); } catch (e) {} return r; }; }
+  try { console.log('[ReviewPal] V1.28 Token 用量已加载'); } catch (e) {}
 })();

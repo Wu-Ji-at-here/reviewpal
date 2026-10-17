@@ -4,6 +4,12 @@
 
 | 日期 | 任务模块 | 使用的 AI 工具 | 人类决策点 | AI 产出内容 |
 |---|---|---|---|---|
+| 10/17 | **重新出包（本轮前端改动）** | Codex | 判定"改前端必须重新打包，否则装到旧前端" → `cap sync` + `assembleDebug`，并对包内 `assets/public` 与源码做**逐字节比对** | `ReviewPal-debug.apk`（BUILD SUCCESSFUL，包内逐字节一致） |
+| 10/17 | **Token 用量可见** | Codex（人类提出） | 判定真实模型要能看"烧了多少" → 按**日/月/累计**累计 token（App 存本机、网页版存后端 `data/usage.json`），设置页展示；Mock 显示"无用量" | `local.js` + `server/index.js`（`/api/usage`）+ `enhance.js` V1.28 + 设置页 |
+| 10/17 | **生成后自动跳到「人在回路」** | Codex（人类提出） | 判定"生成完还要自己找结果"是断点 → 生成成功后自动滚到区块 3 并高亮 | `web/index.html`：`gotoHumanInLoop()` |
+| 10/17 | **翻页按钮下移 + 重置按钮** | Codex（人类提出，位置由 AI 定） | 判定按钮在输入框**上方**不顺手 → 移到输入框下方；并按"同类操作放一起"把「重置」放进动作区（**二次确认**后清空五问与草稿） | `web/index.html`：`stepsbar` → `stepfoot` + `resetFive()` |
+| 10/17 | **网页版顶栏不悬浮** | Codex（人类提出） | 判定顶栏常驻会挡阅读 → 网页版去掉 `sticky`（**手机版保留**固定顶栏） | `web/index.html`：`.topbar` 去 `position:sticky` |
+| 10/17 | **网页版改竖向单列（去轮播）** | Codex（人类看完网页版提出：卡片偏大、只能左右滑不习惯） | 判定"左右滑卡片"不符合网页使用习惯 → 宽屏改**竖向堆叠**、卡片限宽居中、去掉侧卡点击（**窄屏行为不变**） | `web/index.html`：`.deck/.track/.slide` 重写 + `slideTo` 宽屏改滚动 |
 | 10/17 | **① 可安装 Android App（Capacitor 7）** | Codex（人类决策：本地优先 / Key 放手机 / 保留网页版） | 判定"要做成能装进手机的打卡工具" → 选 **Capacitor 7** 打 Android APK；数据存手机 IndexedDB（离线可用）、**API Key 存 Android Keystore**；桌面网页版并行保留（网页模式不生效） | `mobile/` 工程 + `web/local.js` 本地优先层 + 3 个原生插件（secure-storage / app / local-notifications） |
 | 10/17 | **移动端导航与设置改版** | Codex（人类逐项 UI 裁决） | 判定手机端要"一眼看懂"的信息架构 → 底部 4 标签、固定顶栏=当前页名、设置页改 iOS 分组内嵌列表；**安卓返回键接管**；删除二次确认 | `web/enhance.js`（V1.19 + V1.21~V1.25） |
 | 10/17 | **每日提醒（本地通知）** | Codex（人类提出"要能提醒"） | 判定提醒必须"本地通知 + 可测试 + 可改时间" → 闹钟式时/分滚轮、开关、测试提醒、`getPending()` 回报"待触发 N 条"、开机自动重排 | `enhance.js` V1.26/V1.27 + Manifest 通知 / 精确闹钟权限 |
