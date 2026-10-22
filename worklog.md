@@ -99,3 +99,12 @@
 | 10/17 | PPT 代改 → V2.1 | 文案升 V2.1 + 示意图「进度条→圆环」；未嵌入用户截图（仅参考） | 复盘通_答辩PPT_V2.1.pptx |
 | 10/17 | 代码清理 | 删死引用/死 CSS/死函数：`cardBar`/`yestBar`/`rpRingNum`/`animateNum`/`moodStrip·moodNow` 残留、`.bar`/`.pubrow`/`.hp0`/`.hsoon`/`.navbtn`/`.moodchip*` 死 CSS、index.html 重复的 `exportCard`、enhance 里无用的 `ymd`、`saveName` | web/index.html · web/enhance.js |
 | 10/18 | 二次清理（复核后） | 复核确认 .decknav/.dots/#deckDots 是**活的**（桌面点状翻页器）→ **保留**；只删隐藏残件 .deckhint/#deckHint/#deckCap；生成器删掉被覆盖的第一个 heatmap（slide_arrow_down 经查仍在用，保留） | web/index.html · work/build_ppt_reviewpal.py |
+
+## V2.1.1（2026-10-22 · 答辩日修复）
+| 日期 | 事项 | 决策 | 产出 |
+|---|---|---|---|
+| 10/22 | 「后端没连上」误报 · 彻底修复 | 根因：`index.html` 在 `local.js` 之前就调用了 `loadConfig()`，那次**真实网络请求失败的回调晚到**，把横幅重新打出来（上一版"初始化后重跑 loadConfig"没盖住这个竞态）。改为**延迟到所有脚本加载后**再初始化 + App 层兜底隐藏 `#realBanner` | web/index.html · web/local.js |
+| 10/22 | 「去复盘卡」入口 | 「确认并保存到复盘库」右侧新增 `去复盘卡 →`（`goReviewCard()` → `slideTo(1)`，移动端自动同步底部高亮） | web/index.html |
+| 10/22 | 交付刷新 | 重跑 `cap sync` + `assembleDebug`（24 任务实执行）；APK/提交包/zip/bundle 全部刷新 | dist/ReviewPal-debug.apk |
+
+**自检**：单测 15/0；JS + index.html 内联 JS `node --check` 全过；无头浏览器（http 下模拟 Capacitor=android）实测——横幅隐藏、`fetch('/api/config')` 本地 200、`pill=本地模式 · 数据存在手机`、`去复盘卡` 按钮存在、`jsError=none`；三层一致（web ＝ mobile/www ＝ APK assets）。

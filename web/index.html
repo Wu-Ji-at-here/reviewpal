@@ -370,6 +370,7 @@
           <div class="spacer"></div>
           <div class="row">
             <button class="btn" onclick="confirmSave()">✓ 确认并保存到复盘库</button>
+            <button class="btn ghost" onclick="goReviewCard()">去复盘卡 →</button>
             <span class="note" id="saveHint" style="margin:0">保存后自动入库，无需单独一步</span>
           </div>
         </section>
@@ -993,6 +994,7 @@ function __wrapText(x,text,left,top,maxW,lh,maxLines){
 /* ================= 幻灯片切换（箭头 / 键盘 / 拖拽滑动） ================= */
 let __slide=0;
 function slides(){ return Array.prototype.slice.call(document.querySelectorAll('#deck .slide')); }
+function goReviewCard(){ try{ slideTo(1); window.scrollTo(0,0); }catch(e){} }
 function gotoHumanInLoop(){ try{ const el=document.getElementById('rpHumanInLoop'); if(!el) return; el.scrollIntoView({behavior:'smooth', block:'start'}); el.classList.remove('rp-flash'); void el.offsetWidth; el.classList.add('rp-flash'); setTimeout(function(){ el.classList.remove('rp-flash'); }, 1700); }catch(e){} }
 function resetFive(){
   const go=function(){
@@ -1084,7 +1086,7 @@ function bindHistoryFields(){
 /* ---------------- 初始化 ---------------- */
 applyTheme(); applyMood(''); stepShow(1); updatePreview(); slideTo(0,1); bindAutoGrow(); bindHistoryFields(); setQuote();
 setWallFilter('all');
-loadConfig(); loadRecords();
+(function(){ if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded", function(){ loadConfig(); loadRecords(); }); } else { loadConfig(); loadRecords(); } })();
 (function(){ document.querySelectorAll('#qList li').forEach(function(li){ li.addEventListener('click', function(){ goStep(Number(li.dataset.q)); }); }); })();
 (function(){ const wrap=document.getElementById('q_align'); if(!wrap) return; const chips=[].slice.call(wrap.querySelectorAll('.chip')); chips.forEach(function(c){ c.addEventListener('mousedown', function(e){ e.preventDefault(); }); c.addEventListener('click', function(){ chips.forEach(function(x){ x.classList.remove('on'); }); c.classList.add('on'); }); }); })();
 </script>

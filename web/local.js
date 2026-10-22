@@ -190,7 +190,8 @@
 (function () {
   var Cap = window.Capacitor || {}; var plat = Cap.getPlatform ? Cap.getPlatform() : (Cap.platform || 'web');
   if (plat !== 'android' && plat !== 'ios') return;
-  window.loadConfig = async function () {
+  try { window.__rpFix=function(){ var b=document.getElementById("realBanner"); if(b){ b.className="banner"; b.innerHTML=""; } if(!document.getElementById("rpNoRealBannerStyle")){ var s=document.createElement("style"); s.id="rpNoRealBannerStyle"; s.textContent="#realBanner{display:none !important}"; document.head.appendChild(s); } var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),n; while((n=w.nextNode())){ if(n.nodeValue.indexOf("只写进后端 .env")>=0){ n.nodeValue=n.nodeValue.split("只写进后端 .env").join("只存本机加密存储"); } } }; window.__rpFix(); document.addEventListener("DOMContentLoaded", function(){ try{ window.__rpFix(); }catch(e){} }); } catch(e){}
+window.loadConfig = async function () {
     try {
       await (await fetch('/api/config')).json();
       var pill = document.getElementById('serverPill'); if (pill) pill.innerHTML = '<span class="dot green"></span> 本地模式 · 数据存在手机';
