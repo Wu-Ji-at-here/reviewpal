@@ -108,3 +108,10 @@
 | 10/22 | 交付刷新 | 重跑 `cap sync` + `assembleDebug`（24 任务实执行）；APK/提交包/zip/bundle 全部刷新 | dist/ReviewPal-debug.apk |
 
 **自检**：单测 15/0；JS + index.html 内联 JS `node --check` 全过；无头浏览器（http 下模拟 Capacitor=android）实测——横幅隐藏、`fetch('/api/config')` 本地 200、`pill=本地模式 · 数据存在手机`、`去复盘卡` 按钮存在、`jsError=none`；三层一致（web ＝ mobile/www ＝ APK assets）。
+
+## V2.1.2（2026-10-23 · App 窄屏微调）
+| 日期 | 事项 | 决策 | 产出 |
+|---|---|---|---|
+| 10/23 | 「确认并保存 / 去复盘卡」按钮 | 窄屏下两按钮 **等宽铺满**（`flex:1 1 0`，保存提示移到下一行）；次要按钮由深色描边改为 **同色系浅色调**（`color-mix` 取 accent 16% 当底 + accent 文字），消除"撞色" | web/enhance.js |
+| 10/23 | 第 2 问一键填入 | 窄屏下给 `#q_plan` 挂历史下拉（源 = 过往记录的 `answers.tomorrow`，**最新在前**），聚焦/输入即弹、点一下填入——与第 1 问机制一致 | web/index.html |
+| 10/23 | 交付刷新 | cap sync + assembleDebug；APK / 提交包 / zip / bundle 刷新并覆盖 GitHub Release v2.1 | dist/ReviewPal-debug.apk |

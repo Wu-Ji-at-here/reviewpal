@@ -1083,6 +1083,8 @@ function bindHistoryFields(){
   });
 }
 
+/* ===== 移动端（≤980px）：第 2 问可一键填入「上一张复盘卡的明日计划」（数据源 = 过往记录的 answers.tomorrow，最新在前） ===== */
+(function(){ try{ if(isWide()) return; var qp=document.getElementById("q_plan"); if(!qp) return; qp.setAttribute("data-history","tomorrow"); bindHistoryFields(); }catch(e){} })();
 /* ---------------- 初始化 ---------------- */
 applyTheme(); applyMood(''); stepShow(1); updatePreview(); slideTo(0,1); bindAutoGrow(); bindHistoryFields(); setQuote();
 setWallFilter('all');
